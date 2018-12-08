@@ -35,3 +35,8 @@ function love.update(dt)
     end
     player:update(dt)
 end
+
+function love.quit()
+    print('Thanks for playing!')
+    print('Recorded ' .. #player.path / 2 .. ' player path points')
+end
