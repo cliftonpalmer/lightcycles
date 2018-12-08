@@ -44,7 +44,13 @@ end
 
 function Player:draw()
     love.graphics.setColor(self.color)
-    love.graphics.rectangle('fill', self.position.x, self.position.y, self.width, self.height)
+    love.graphics.rectangle(
+        'fill',
+        self.position.x-self.width/2,
+        self.position.y-self.height/2,
+        self.width,
+        self.height
+        )
 
     -- add current position
     self:recordPosition()
@@ -54,8 +60,8 @@ function Player:draw()
 end
 
 function Player:recordPosition()
-    table.insert(self.path, self.position.x + self.width/2)
-    table.insert(self.path, self.position.y + self.height/2)
+    table.insert(self.path, self.position.x)
+    table.insert(self.path, self.position.y)
 end
 
 function Player:multiple_keys_are_pressed()
