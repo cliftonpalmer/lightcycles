@@ -54,15 +54,27 @@ function Player:recordPosition()
     table.insert(self.path, self.position.y + self.height/2)
 end
 
+function Player:multiple_keys_are_pressed()
+    local count = 0
+    for key,_ in pairs(self.keys) do
+        if love.keyboard.isDown(key) then
+            count = count + 1
+        end
+    end
+    return count > 1
+end
+
 function Player:update(dt)
-    for key, name in pairs(self.keys) do
-        if love.keyboard.isDown(key)
-        and self.vector ~= self.vectors[name]
-        and (self.vector + self.vectors[name]):length() > 0
-        then
-            self.vector = self.vectors[name]
-            self:recordPosition()
-            break
+    if not self:multiple_keys_are_pressed() then
+        for key, name in pairs(self.keys) do
+            if love.keyboard.isDown(key)
+            and self.vector ~= self.vectors[name]
+            and (self.vector + self.vectors[name]):length() > 0
+            then
+                self.vector = self.vectors[name]
+                self:recordPosition()
+                break
+            end
         end
     end
     self.position = self.position + self.vector * self.acceleration * dt
