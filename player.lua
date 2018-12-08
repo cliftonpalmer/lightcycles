@@ -32,6 +32,7 @@ end
 
 function Player:drawPath()
     if #self.path >= 4 then
+        love.graphics.setLineWidth(2)
         love.graphics.setColor(self.color)
         love.graphics.line(self.path)
     end
