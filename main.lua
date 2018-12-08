@@ -3,7 +3,7 @@
 require 'player'
 
 function love.load()
-    player = Player:new({position={x=100, y=100}})
+    player = Player:new({position={x=100, y=100}, vector={x=Player.acceleration, y=0}})
 end
 
 function love.draw()

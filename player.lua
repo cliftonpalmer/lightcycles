@@ -13,7 +13,6 @@ function Player:new(o)
     setmetatable(o, self)
     self.__index = self
     o:recordPosition()
-    o.vector = {x=o.acceleration, y=0}
     return o
 end
 
@@ -36,7 +35,6 @@ function Player:draw()
 end
 
 function Player:recordPosition()
-    print(self.position.x .. ', ' .. self.position.y)
     table.insert(self.path, self.position.x + self.width/2)
     table.insert(self.path, self.position.y + self.height/2)
 end
