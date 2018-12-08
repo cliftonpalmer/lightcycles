@@ -17,7 +17,7 @@ scene.grid.delta = 50
 -- load
 function scene:load()
     table.insert(scene.players, require('players/1'))
-    --table.insert(scene.players, require('players/2'))
+    table.insert(scene.players, require('players/2'))
 end
 
 -- draw
@@ -60,33 +60,34 @@ function scene:updatePlayers(dt)
 end
 
 function doLinesIntersect(x1,y1, x2,y2, x3,y3, x4,y4)
+    local intersect = false
+
     if x1 == x2 and x3 == x4
     or y1 == y2 and y3 == y4
     then
         -- if lines are parallel, no intersection!
-        return false
+    elseif x1 == x2 and y3 == y4 then
+        intersect =
+            x3 <= x1 and x1 <= x4
+            and
+            y1 <= y3 and y3 <= y2
+    elseif x3 == x4 and y1 == y2 then
+        intersect =
+            x1 <= x3 and x3 <= x2
+            and
+            y3 <= y1 and y1 <= y4
     else
-        -- if lines are not parallel, they must intersect
-        -- do segments overlap?
-        if
-            (
-                (x1 <= x3 and x3 <= x2 or x1 <= x4 and x4 <= x2)
-                or
-                (x3 <= x1 and x1 <= x4 or x3 <= x2 and x2 <= x4)
-            ) and (
-                (y1 <= y3 and y3 <= y2 or y1 <= y4 and y4 <= y2)
-                or
-                (y3 <= y1 and y1 <= y4 or y3 <= y2 and y2 <= y4)
-            )
-        then
-            scene.paused = true
-            scene.intersection = {
-                a = {x1,y1, x2,y2},
-                b = {x3,y3, x4,y4},
-                }
-            return true
-        end
+        print('foo')
     end
+
+    if intersect then
+        scene.intersection = {
+            a = {x1,y1, x2,y2},
+            b = {x3,y3, x4,y4},
+            }
+    end
+
+    return intersect
 end
 
 function doesLineIntersectPlayerPaths(path, x1,y1, x2,y2)
@@ -113,6 +114,7 @@ end
 -- love collision handler
 function collision(player)
     print('Player '..tostring(player)..' crashed!')
+    scene.paused = true
     --love.event.quit()
 end
 love.handlers.collision = collision
