@@ -67,15 +67,25 @@ function doLinesIntersect(x1,y1, x2,y2, x3,y3, x4,y4)
     then
         -- if lines are parallel, no intersection!
     elseif x1 == x2 and y3 == y4 then
-        intersect =
-            x3 <= x1 and x1 <= x4
-            and
-            y1 <= y3 and y3 <= y2
+        intersect = (
+                x3 <= x1 and x1 <= x4
+                or
+                x4 <= x1 and x1 <= x3
+            ) and (
+                y1 <= y3 and y3 <= y2
+                or
+                y2 <= y3 and y3 <= y1
+            )
     elseif x3 == x4 and y1 == y2 then
-        intersect =
-            x1 <= x3 and x3 <= x2
-            and
-            y3 <= y1 and y1 <= y4
+        intersect = (
+                x1 <= x3 and x3 <= x2
+                or
+                x2 <= x3 and x3 <= x1
+            ) and (
+                y3 <= y1 and y1 <= y4
+                or
+                y4 <= y1 and y1 <= y3
+            )
     else
         print('foo')
     end
