@@ -1,7 +1,7 @@
 require 'vec2'
 
 Player = {}
-Player.name = 'player'
+Player.name = 'none'
 Player.color = {255, 0, 0}
 Player.width = 5
 Player.height = 5
@@ -28,6 +28,10 @@ function Player:new(o)
     self.__index = self
     o:recordPosition()
     return o
+end
+
+function Player:__tostring()
+    return self.name
 end
 
 function Player:drawPath()

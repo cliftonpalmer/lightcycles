@@ -7,6 +7,7 @@ local width = love.graphics.getWidth()
 local height = love.graphics.getHeight()
 
 return Player:new({
+    name='Player 2',
     position=vec2:new(width-100,height-100),
     vector=Player.vectors.left,
     path={},

@@ -50,13 +50,37 @@ function scene:updatePlayers(dt)
     end
 end
 
+function doesLineIntersectPlayerPaths(path, x1, y1, x2, y2)
+    return false
+end
+
+function scene:handleCollisions()
+    -- calculate the last line for each player from current position
+    -- check if line intersects any other path line
+    -- if so, raise collision event for player
+    for _,player in pairs(self.players) do
+        local x1 = player.path[#player.path-1]
+        local y1 = player.path[#player.path]
+        local x2 = player.position.x
+        local y2 = player.position.y
+
+        -- check intersection against each existing path
+        for _,player2 in pairs(self.players) do
+            if doesLineIntersectPlayerPaths(player2.path, x1, y1, x2, y2) then
+                love.event.push('collision', player)
+            end
+        end
+    end
+end
+
 function scene:update(dt)
     self:updatePlayers(dt)
+    self:handleCollisions()
 end
 
 -- quit
 function scene:quit()
-    for i,player in pairs(self.players) do
-        print('Player '..i..' generated '.. #player.path / 2 .. ' path points')
+    for _,player in pairs(self.players) do
+        print(tostring(player)..' generated '.. #player.path / 2 .. ' path points')
     end
 end

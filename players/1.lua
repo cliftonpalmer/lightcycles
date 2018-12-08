@@ -4,6 +4,7 @@ require 'vec2'
 require 'player'
 
 return Player:new({
+    name='Player 1',
     position=vec2:new(100,100),
     vector=Player.vectors.right,
     path={},
