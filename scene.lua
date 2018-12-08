@@ -15,24 +15,8 @@ scene.grid.delta = 50
 
 -- load
 function scene:load()
-    table.insert(scene.players, Player:new({
-        position=vec2:new(100,100),
-        vector=Player.vectors.right,
-        path={},
-        }))
-
-    table.insert(scene.players, Player:new({
-        position=vec2:new(self.width-100,self.height-100),
-        vector=Player.vectors.left,
-        path={},
-        color={255, 255, 0},
-        keys={
-            up='up',
-            down='down',
-            left='left',
-            right='right',
-            }
-        }))
+    table.insert(scene.players, require('players/1'))
+    table.insert(scene.players, require('players/2'))
 end
 
 -- draw
