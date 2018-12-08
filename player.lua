@@ -1,12 +1,26 @@
+require 'vec2'
+
 Player = {}
 Player.name = 'player'
 Player.color = {255, 0, 0}
 Player.width = 5
 Player.height = 5
 Player.acceleration = 100
-Player.position = {x=0, y=0}
-Player.vector = {x=0, y=0}
+Player.position = vec2:new(0, 0)
+Player.vector = vec2:new(0, 0)
 Player.path = {}
+Player.vectors = {
+    up    = vec2:new(0, -1),
+    down  = vec2:new(0, 1),
+    left  = vec2:new(-1, 0),
+    right = vec2:new(1, 0),
+    }
+Player.keys = {
+    w = 'up',
+    s = 'down',
+    a = 'left',
+    d = 'right',
+    }
 
 function Player:new(o)
     o = o or {}
@@ -40,20 +54,15 @@ function Player:recordPosition()
 end
 
 function Player:update(dt)
-    if love.keyboard.isDown("w") then
-        self.vector = {x=0, y=-self.acceleration}
-        self:recordPosition()
-    elseif love.keyboard.isDown("s") then
-        self.vector = {x=0, y=self.acceleration}
-        self:recordPosition()
-    elseif love.keyboard.isDown("a") then
-        self.vector = {x=-self.acceleration, y=0}
-        self:recordPosition()
-    elseif love.keyboard.isDown("d") then
-        self.vector = {x=self.acceleration, y=0}
-        self:recordPosition()
+    for key, name in pairs(self.keys) do
+        if love.keyboard.isDown(key)
+        and self.vector ~= self.vectors[name]
+        and (self.vector + self.vectors[name]):length() > 0
+        then
+            self.vector = self.vectors[name]
+            self:recordPosition()
+            break
+        end
     end
-
-    self.position.x = self.position.x + self.vector.x * dt
-    self.position.y = self.position.y + self.vector.y * dt
+    self.position = self.position + self.vector * self.acceleration * dt
 end

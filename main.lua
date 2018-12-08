@@ -1,9 +1,10 @@
 -- main
 
+require 'vec2'
 require 'player'
 
 function love.load()
-    player = Player:new({position={x=100, y=100}, vector={x=Player.acceleration, y=0}})
+    player = Player:new({position=vec2:new(100,100), vector=Player.vectors.right})
 end
 
 function love.draw()
