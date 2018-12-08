@@ -46,7 +46,9 @@ function scene:draw()
     -- draw intersection if it's there
     if self.intersection then
         love.graphics.setColor(0, 255, 0)
-        love.graphics.line(self.intersection)
+        love.graphics.line(self.intersection.a)
+        love.graphics.setColor(0, 0, 255)
+        love.graphics.line(self.intersection.b)
     end
 end
 
@@ -57,7 +59,11 @@ function scene:updatePlayers(dt)
     end
 end
 
-function doLinesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)
+function doLinesIntersect(x1,y1, x2,y2, x3,y3, x4,y4)
+    scene.intersection = {
+        a = {x1,y1, x2,y2},
+        b = {x3,y3, x4,y4},
+        }
     if x1 == x2 and x3 == x4
     or y1 == y2 and y3 == y4
     then
@@ -74,25 +80,28 @@ function doLinesIntersect(x1, y1, x2, y2, x3, y3, x4, y4)
         and y3 <= y1 and y1 <= y4
         then
             scene.paused = true
-            scene.intersection = {x1, y1, x2, y2, x3, y3, x4, y4}
             return true
         end
     end
 end
 
-function doesLineIntersectPlayerPaths(path, x1, y1, x2, y2)
-    local stash = {}
+function doesLineIntersectPlayerPaths(path, x1,y1, x2,y2)
+    local cache = {}
+    cache.a = {}
+    cache.b = {}
     -- for every line in path,
     -- check intersection with player line
     for k,v in pairs(path) do
-        if #stash == 4 then
-            if doLinesIntersect(x1, y1, x2, y2, stash[4], stash[3], stash[2], stash[1]) then
-                return true
+        if #cache.a == 2 then
+            if #cache.b == 2 then
+                if doLinesIntersect(x1,y1, x2,y2, cache.a[1],cache.a[2], cache.b[1],cache.b[2]) then
+                    return true
+                end
             end
-            stash = {}
-        else
-            table.insert(stash,v)
+            cache.b = cache.a
+            cache.a = {}
         end
+        table.insert(cache.a,v)
     end
     return false
 end
