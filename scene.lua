@@ -25,10 +25,19 @@ function scene:drawGrid()
     love.graphics.setBackgroundColor(self.grid.bgcolor)
     love.graphics.setColor(self.grid.linecolor)
 
+    love.graphics.setLineWidth(2)
     for x=0,self.width,self.grid.delta do
         love.graphics.line(x, 0, x, self.height)
     end
     for y=0,self.height,self.grid.delta do
+        love.graphics.line(0, y, self.width, y)
+    end
+
+    love.graphics.setLineWidth(0.5)
+    for x=0,self.width,self.grid.delta/2 do
+        love.graphics.line(x, 0, x, self.height)
+    end
+    for y=0,self.height,self.grid.delta/2 do
         love.graphics.line(0, y, self.width, y)
     end
 end
