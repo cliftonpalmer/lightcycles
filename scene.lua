@@ -5,6 +5,7 @@ require 'player'
 
 
 scene = {}
+scene.debug = false
 scene.paused = false
 scene.width = love.graphics.getWidth()
 scene.height = love.graphics.getHeight()
@@ -53,7 +54,7 @@ function scene:draw()
     self:drawPlayers()
 
     -- draw intersection if it's there
-    if self.intersection then
+    if self.debug and self.intersection then
         love.graphics.setColor(0, 255, 0)
         love.graphics.line(self.intersection.a)
         love.graphics.setColor(0, 0, 255)
