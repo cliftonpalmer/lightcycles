@@ -138,6 +138,16 @@ function scene:handleCollisions()
     for _,player in pairs(self.players) do
         local v1 = player.path.vector
         local v2 = player.path.prev.vector
+
+        -- outside boundary
+        if v1.x < 0 or v1.x > love.graphics.getWidth()
+        or v1.y < 0 or v1.y > love.graphics.getHeight()
+        then
+            love.event.push('collision', tostring(player))
+            break
+        end
+
+        -- inside boundary
         for _,player2 in pairs(self.players) do
             if doesLineIntersectPlayerPaths(player2.path, v1, v2) then
                 love.event.push('collision', tostring(player))
