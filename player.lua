@@ -9,6 +9,7 @@ Player.acceleration = 100
 Player.position = vec2:new(0, 0)
 Player.vector = vec2:new(0, 0)
 Player.path = {}
+Player.path.vector = Player.position
 Player.vectors = {
     up    = vec2:new(0, -1),
     down  = vec2:new(0, 1),
@@ -26,6 +27,7 @@ function Player:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
+    o.path.vector = o.position
     o:recordPosition()
     return o
 end
@@ -35,10 +37,17 @@ function Player:__tostring()
 end
 
 function Player:drawPath()
-    if #self.path >= 4 then
+    local points = {}
+    local node = self.path
+    while node do
+        table.insert(points, node.vector.x)
+        table.insert(points, node.vector.y)
+        node = node.prev
+    end
+    if #points >= 4 then
         love.graphics.setLineWidth(2)
         love.graphics.setColor(self.color)
-        love.graphics.line(self.path)
+        love.graphics.line(points)
     end
 end
 
@@ -51,17 +60,18 @@ function Player:draw()
         self.width,
         self.height
         )
-
-    -- add current position
-    self:recordPosition()
     self:drawPath()
-    table.remove(self.path)
-    table.remove(self.path)
 end
 
 function Player:recordPosition()
-    table.insert(self.path, self.position.x)
-    table.insert(self.path, self.position.y)
+    local v = vec2:new(self.position.x, self.position.y)
+    self.position = v
+    print('Recording position for '..tostring(self)..': '..tostring(self.position))
+    local node = {}
+    node.vector = v
+    node.prev = self.path
+    self.path.next = node
+    self.path = node
 end
 
 function Player:multiple_keys_are_pressed()
@@ -87,5 +97,5 @@ function Player:update(dt)
             end
         end
     end
-    self.position = self.position + self.vector * self.acceleration * dt
+    self.position:add(self.vector * self.acceleration * dt)
 end

@@ -14,9 +14,7 @@ function love.update(dt)
     if love.keyboard.isDown('escape') then
         love.event.quit()
     end
-    if not scene.paused then
-        scene:update(dt)
-    end
+    scene:update(dt)
 end
 
 function love.quit()

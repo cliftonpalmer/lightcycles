@@ -37,6 +37,12 @@ function vec2:__add(v)
     return vec2:new(self.x + v.x, self.y + v.y)
 end
 
+function vec2:add(v)
+    assert(isvector(v), "Expected a vec2 type")
+    self.x = self.x + v.x
+    self.y = self.y + v.y
+end
+
 function vec2:__sub(v)
     assert(isvector(v), "Expected a vec2 type")
     return vec2:new(self.x - v.x, self.y - v.y)

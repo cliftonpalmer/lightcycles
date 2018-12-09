@@ -68,23 +68,23 @@ function doLinesIntersect(x1,y1, x2,y2, x3,y3, x4,y4)
         -- if lines are parallel, no intersection!
     elseif x1 == x2 and y3 == y4 then
         intersect = (
-                x3 <= x1 and x1 <= x4
+                x3 < x1 and x1 < x4
                 or
-                x4 <= x1 and x1 <= x3
+                x4 < x1 and x1 < x3
             ) and (
-                y1 <= y3 and y3 <= y2
+                y1 < y3 and y3 < y2
                 or
-                y2 <= y3 and y3 <= y1
+                y2 < y3 and y3 < y1
             )
     elseif x3 == x4 and y1 == y2 then
         intersect = (
-                x1 <= x3 and x3 <= x2
+                x1 < x3 and x3 < x2
                 or
-                x2 <= x3 and x3 <= x1
+                x2 < x3 and x3 < x1
             ) and (
-                y3 <= y1 and y1 <= y4
+                y3 < y1 and y1 < y4
                 or
-                y4 <= y1 and y1 <= y3
+                y4 < y1 and y1 < y3
             )
     else
         print('You should never see this message')
@@ -100,32 +100,24 @@ function doLinesIntersect(x1,y1, x2,y2, x3,y3, x4,y4)
     return intersect
 end
 
-function doesLineIntersectPlayerPaths(path, x1,y1, x2,y2)
-    local cache = {}
-    cache.a = {}
-    cache.b = {}
+function doesLineIntersectPlayerPaths(node, v1, v2)
     -- for every line in path,
     -- check intersection with player line
-    for k,v in pairs(path) do
-        if #cache.a == 2 then
-            if #cache.b == 2 then
-                if doLinesIntersect(x1,y1, x2,y2, cache.a[1],cache.a[2], cache.b[1],cache.b[2]) then
-                    return true
-                end
-            end
-            cache.b = cache.a
-            cache.a = {}
+    while node and node.prev do
+        local v3 = node.vector
+        local v4 = node.prev.vector
+        if doLinesIntersect(v1.x,v1.y, v2.x,v2.y, v3.x,v3.y, v4.x,v4.y) then
+            return true
         end
-        table.insert(cache.a,v)
+        node = node.prev
     end
     return false
 end
 
 -- love collision handler
 function collision(player)
-    print('Player '..tostring(player)..' crashed!')
+    print(player..' crashed!')
     scene.paused = true
-    --love.event.quit()
 end
 love.handlers.collision = collision
 
@@ -133,24 +125,24 @@ function scene:handleCollisions()
     -- calculate the last line for each player from current position
     -- check if line intersects any other path line
     -- if so, raise collision event for player
+    -- only check last line for intersection, since all the rest should be ok
     for _,player in pairs(self.players) do
-        local x1 = player.path[#player.path-1]
-        local y1 = player.path[#player.path]
-        local x2 = player.position.x
-        local y2 = player.position.y
-
-        -- check intersection against each existing path
+        local v1 = player.path.vector
+        local v2 = player.path.prev.vector
         for _,player2 in pairs(self.players) do
-            if doesLineIntersectPlayerPaths(player2.path, x1, y1, x2, y2) then
-                love.event.push('collision', player)
+            if doesLineIntersectPlayerPaths(player2.path, v1, v2) then
+                love.event.push('collision', tostring(player))
+                break
             end
         end
     end
 end
 
 function scene:update(dt)
-    self:updatePlayers(dt)
-    self:handleCollisions()
+    if not self.paused then
+        self:updatePlayers(dt)
+        self:handleCollisions()
+    end
 end
 
 -- quit
